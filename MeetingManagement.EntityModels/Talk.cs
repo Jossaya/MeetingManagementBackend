@@ -13,7 +13,7 @@ namespace MeetingManagement.EntityModels
             {
                 Id = id;
                 Duration = duration;
-                if (!Regex.IsMatch(title, @"[0-9]+"))
+                if (!Regex.IsMatch(title, "[0-9]+"))
                     Title = title;
                 else
                     throw new ArgumentException("Numeric values are not allowed in talk title");

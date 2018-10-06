@@ -44,10 +44,10 @@ namespace MeetingManagement.UnitTests
                 };
             service = new TalkAllocationService();
             // act
-            var registeredtalks = (List<Talk>)await service.RegisterTalks(talks);
+            var registeredtalksList = (List<Talk>)await service.RegisterTalks(talks);
             // assert
-            Assert.NotNull(registeredtalks);
-            Assert.Equal(talks.Count, registeredtalks.Count);
+            Assert.NotNull(registeredtalksList);
+            Assert.Equal(talks.Count, registeredtalksList.Count);
         }
         [Fact(DisplayName = "[TalkAllocationService : CreateMeeting] Should allocate talks time and return a list of allocated talks to a track in a meeting")]
         public async void AllocateTalks()
