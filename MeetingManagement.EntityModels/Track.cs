@@ -10,10 +10,5 @@ namespace MeetingManagement.EntityModels
         public virtual TrackSession AfternoonSession { get; set; }
         public virtual Networking Networking { get; set; }
         public virtual LunchBreak LunchBreak { get; set; }
-        public Track()
-        {
-
-        }
-
     }
 }

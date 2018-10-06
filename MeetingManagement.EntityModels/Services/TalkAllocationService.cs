@@ -1,8 +1,8 @@
-﻿using System;
+﻿using MeetingManagement.EntityModels.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MeetingManagement.EntityModels.Services.Interfaces;
 
 namespace MeetingManagement.EntityModels.Services
 {
@@ -91,7 +91,7 @@ namespace MeetingManagement.EntityModels.Services
                     {
                         Title = "Networking Event",
                         Start = new TimeSpan(17, 00, 00),
-//                        End = new TimeSpan(17, 00, 00)
+                        //                        End = new TimeSpan(17, 00, 00)
                     },
                     LunchBreak = new LunchBreak()
                     {
@@ -223,15 +223,15 @@ namespace MeetingManagement.EntityModels.Services
 
         public void ShuffleTalks()
         {
-            Random rng = new Random();
-            int n = _talks.Count;
-            while (n > 1)
+            Random random = new Random();
+            int count = _talks.Count;
+            while (count > 1)
             {
-                n--;
-                int k = rng.Next(n + 1);
-                Talk value = _talks[k];
-                _talks[k] = _talks[n];
-                _talks[n] = value;
+                count--;
+                int index = random.Next(count + 1);
+                Talk talk = _talks[index];
+                _talks[index] = _talks[count];
+                _talks[count] = talk;
             }
 
         }
