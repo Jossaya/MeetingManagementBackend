@@ -13,7 +13,7 @@ namespace MeetingManagement.UnitTests
         TalksRepository talksRepository;
         private TalkAllocationService service;
         List<Track> tracks;
-        [Fact(DisplayName = "[TalkAllocationService : CreateTracks] Should create tracks from talks  and return a list of tracks ")]
+        [Fact(DisplayName = "[TalkAllocationService : CreateTracksFromTalks] Should create tracks from talks  and return a list of tracks ")]
         public async void CreateTracks()
         {
             // arrange
@@ -21,7 +21,7 @@ namespace MeetingManagement.UnitTests
             talksRepository = new TalksRepository();
             service = new TalkAllocationService();
             // act
-            tracks = (List<Track>)await service.CreateTracks(talksRepository.TestInput);
+            tracks = (List<Track>)await service.CreateTracksFromTalks(talksRepository.TestInput);
             // assert
             Assert.NotNull(tracks);
         }

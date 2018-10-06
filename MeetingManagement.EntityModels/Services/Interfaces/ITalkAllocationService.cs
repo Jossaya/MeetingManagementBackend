@@ -5,7 +5,7 @@ namespace MeetingManagement.EntityModels.Services.Interfaces
 {
     interface ITalkAllocationService
     {
-        Task<IList<Track>> CreateTracks(IList<Talk> talks);
+        Task<IList<Track>> CreateTracksFromTalks(IList<Talk> talks);
         Task<List<Talk>> RegisterTalks(IList<Talk> talks);
         Task<Meeting> CreateMeeting(IList<Talk> talks);
         Task<Meeting> AssignStartingAndEnding(Meeting meeting);

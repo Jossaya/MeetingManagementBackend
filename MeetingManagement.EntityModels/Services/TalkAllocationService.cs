@@ -16,55 +16,11 @@ namespace MeetingManagement.EntityModels.Services
         {
 
         }
-        public TalkAllocationService(IList<Talk> talks)
+      public async Task<IList<Track>> CreateTracksFromTalks(IList<Talk> talks)
         {
             _tracks = new List<Track>();
             int totalDuration = talks.Sum(item => item.Duration.TalkLength * (int)(item.Duration.TalkLengthType));
-            // Get Number of tracks from total minutes & lighting in talks: A track has 6hrs of talks
-            int totalTracks = totalDuration / 360;
-            for (int i = 1; i <= totalTracks; i++)
-            {
-                var track = new Track
-                {
-                    Id = Guid.NewGuid(),
-                    TrackName = $"Track {i}",
-                    MorningSession = new TrackSession()
-                    {
-                        Talks = new List<Talk>(),
-                        SessionName = "Morning Session",
-                        Start = new TimeSpan(09, 00, 00),
-                        End = new TimeSpan(12, 00, 00)
-                    },
-                    AfternoonSession = new TrackSession()
-                    {
-                        Talks = new List<Talk>(),
-                        SessionName = "Afternoon Session",
-                        Start = new TimeSpan(13, 00, 00),
-                        End = new TimeSpan(17, 00, 00)
-                    },
-                    Networking = new Networking()
-                    {
-                        Title = "Networking Event",
-                        Start = new TimeSpan(16, 00, 00),
-                        NetworkingCanStart = new TimeSpan(17, 00, 00)
-                    },
-                    LunchBreak = new LunchBreak()
-                    {
-                        Title = "Lunch Break",
-                        Start = new TimeSpan(12, 00, 00),
-                        End = new TimeSpan(13, 00, 00)
-                    }
-                };
-                _tracks.Add(track);
-            }
-
-        }
-
-        public async Task<IList<Track>> CreateTracks(IList<Talk> talks)
-        {
-            _tracks = new List<Track>();
-            int totalDuration = talks.Sum(item => item.Duration.TalkLength * (int)(item.Duration.TalkLengthType));
-            // Get Number of tracks from total minutes & lighting in talks: A track has 6hrs of talks
+            // Get Number of tracks from total minutes & lighting in talks: A track has 7hrs of talks
             int totalTracks = totalDuration / 420;
             for (int i = 1; i <= totalTracks; i++)
             {
@@ -119,7 +75,7 @@ namespace MeetingManagement.EntityModels.Services
         }
         public async Task<Meeting> CreateMeeting(IList<Talk> talks)
         {
-            await CreateTracks(talks);
+            await CreateTracksFromTalks(talks);
             await RegisterTalks(talks);
             ShuffleTalks();
             ComputeSessionUnAllocatedTime();
