@@ -13,13 +13,16 @@ namespace MeetingManagement.WebAPI.Controllers
     {
         private TalksRepository _talksRepository;
         private ITalkAllocationService _service;
+        public MeetingController(ITalkAllocationService service) {
+            _service = service;
+        }
         // GET api/meeting
         [HttpGet]
         public async Task<ActionResult<MeetingViewModel>> GetMeetingAsync()
         {
 
             _talksRepository = new TalksRepository();
-            _service = new TalkAllocationService();
+          
 
 
             var meeting = await _service.CreateMeeting(_talksRepository.TestInput);
