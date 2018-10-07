@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace MeetingManagement.EntityModels.Services.Interfaces
 {
-    interface ITalkAllocationService
+  public  interface ITalkAllocationService
     {
         Task<IList<Track>> CreateTracksFromTalks(IList<Talk> talks);
         Task<List<Talk>> RegisterTalks(IList<Talk> talks);

@@ -1,10 +1,10 @@
-﻿using MeetingManagement.EntityModels.Services.Interfaces;
+﻿using MeetingManagement.EntityModels.Enums;
+using MeetingManagement.EntityModels.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using MeetingManagement.EntityModels.Enums;
 
 namespace MeetingManagement.EntityModels.Services
 {
@@ -17,16 +17,16 @@ namespace MeetingManagement.EntityModels.Services
         {
 
         }
-      public async Task<IList<Track>> CreateTracksFromTalks(IList<Talk> talks)
+        public async Task<IList<Track>> CreateTracksFromTalks(IList<Talk> talks)
         {
             _tracks = new List<Track>();
-           
+
             var totalDuration = talks.Sum(item => _culture.CompareInfo.IndexOf(item.Title, "lightning", CompareOptions.IgnoreCase) >= 0
                 ? (int)TalkLengthTypeEnum.Lightning
                 : (item.Duration.TalkLength * (int)TalkLengthTypeEnum.Minutes));
 
             // Get Number of tracks from total minutes & lighting in talks: A track has possible 7hrs
-            int totalTracks = (int)Math.Ceiling((double)(totalDuration/(double)420));
+            int totalTracks = (int)Math.Ceiling((double)(totalDuration / (double)420));
             for (int i = 1; i <= totalTracks; i++)
             {
                 var track = new Track

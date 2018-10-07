@@ -4,26 +4,27 @@ using MeetingManagement.EntityModels;
 using MeetingManagement.EntityModels.Data;
 using MeetingManagement.EntityModels.Enums;
 using MeetingManagement.EntityModels.Services;
+using MeetingManagement.EntityModels.Services.Interfaces;
 using Xunit;
 
 namespace MeetingManagement.UnitTests
 {
     public class TalkAllocationTest
     {
-        TalksRepository talksRepository;
-        private TalkAllocationService service;
-        List<Track> tracks;
+        TalksRepository _talksRepository;
+        private ITalkAllocationService _service;
+        List<Track> _tracks;
         [Fact(DisplayName = "[TalkAllocationService : CreateTracksFromTalks] Should create tracks from talks  and return a list of tracks ")]
         public async void CreateTracks()
         {
             // arrange
-            tracks = new List<Track>();
-            talksRepository = new TalksRepository();
-            service = new TalkAllocationService();
+            _tracks = new List<Track>();
+            _talksRepository = new TalksRepository();
+            _service = new TalkAllocationService();
             // act
-            tracks = (List<Track>)await service.CreateTracksFromTalks(talksRepository.TestInput);
+            _tracks = (List<Track>)await _service.CreateTracksFromTalks(_talksRepository.TestInput);
             // assert
-            Assert.NotNull(tracks);
+            Assert.NotNull(_tracks);
         }
         [Fact(DisplayName = "[TalkAllocationService : RegisterTalks] Should register talks and return a list of talks, A talk title should not have numeric values ")]
         public async void RegisterTalks()
@@ -42,9 +43,9 @@ namespace MeetingManagement.UnitTests
                 new Talk(Guid.NewGuid(),  "Accounting-Driven Development", new TalkDuration{ TalkLength=45,TalkLengthType=TalkLengthTypeEnum.Minutes}),
 
                 };
-            service = new TalkAllocationService();
+            _service = new TalkAllocationService();
             // act
-            var registeredtalksList = (List<Talk>)await service.RegisterTalks(talks);
+            var registeredtalksList = (List<Talk>)await _service.RegisterTalks(talks);
             // assert
             Assert.NotNull(registeredtalksList);
             Assert.Equal(talks.Count, registeredtalksList.Count);
@@ -53,10 +54,10 @@ namespace MeetingManagement.UnitTests
         public async void AllocateTalks()
         {
             // arrange
-            talksRepository = new TalksRepository();
-            service = new TalkAllocationService();
+            _talksRepository = new TalksRepository();
+            _service = new TalkAllocationService();
             // act
-            var meeting = await service.CreateMeeting(talksRepository.TestInput);
+            var meeting = await _service.CreateMeeting(_talksRepository.TestInput);
             // assert
             Assert.NotNull(meeting);
         }

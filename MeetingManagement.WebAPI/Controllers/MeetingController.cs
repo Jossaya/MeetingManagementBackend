@@ -3,6 +3,7 @@ using MeetingManagement.EntityModels.Services;
 using MeetingManagement.WebAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using MeetingManagement.EntityModels.Services.Interfaces;
 
 namespace MeetingManagement.WebAPI.Controllers
 {
@@ -11,7 +12,7 @@ namespace MeetingManagement.WebAPI.Controllers
     public class MeetingController : ControllerBase
     {
         private TalksRepository _talksRepository;
-        private TalkAllocationService _service;
+        private ITalkAllocationService _service;
         // GET api/meeting
         [HttpGet]
         public async Task<ActionResult<MeetingViewModel>> GetMeetingAsync()
