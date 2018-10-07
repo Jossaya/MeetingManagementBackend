@@ -14,5 +14,6 @@ namespace MeetingManagement.EntityModels.Services.Interfaces
         void AllocateNetworkingEvent();
         void ComputeSessionUnAllocatedTime();
         void ShuffleTalks();
+        Task<int>  ComputeTalkDuration(Talk talk);
     }
 }

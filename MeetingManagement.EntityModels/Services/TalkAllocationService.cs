@@ -1,8 +1,10 @@
 ﻿using MeetingManagement.EntityModels.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using MeetingManagement.EntityModels.Enums;
 
 namespace MeetingManagement.EntityModels.Services
 {
@@ -10,8 +12,7 @@ namespace MeetingManagement.EntityModels.Services
     {
         public List<Track> _tracks;
         public List<Talk> _talks;
-        private int _unAllocatedTime;
-
+        CultureInfo _culture = CultureInfo.CurrentCulture;
         public TalkAllocationService()
         {
 
@@ -19,9 +20,13 @@ namespace MeetingManagement.EntityModels.Services
       public async Task<IList<Track>> CreateTracksFromTalks(IList<Talk> talks)
         {
             _tracks = new List<Track>();
-            int totalDuration = talks.Sum(item => item.Duration.TalkLength * (int)(item.Duration.TalkLengthType));
-            // Get Number of tracks from total minutes & lighting in talks: A track has 7hrs of talks
-            int totalTracks = totalDuration / 420;
+           
+            var totalDuration = talks.Sum(item => _culture.CompareInfo.IndexOf(item.Title, "lightning", CompareOptions.IgnoreCase) >= 0
+                ? (int)TalkLengthTypeEnum.Lightning
+                : (item.Duration.TalkLength * (int)TalkLengthTypeEnum.Minutes));
+
+            // Get Number of tracks from total minutes & lighting in talks: A track has possible 7hrs
+            int totalTracks = (int)Math.Ceiling((double)(totalDuration/(double)420));
             for (int i = 1; i <= totalTracks; i++)
             {
                 var track = new Track
@@ -97,23 +102,19 @@ namespace MeetingManagement.EntityModels.Services
         }
         public async Task<Meeting> AssignStartingAndEnding(Meeting meeting)
         {
-            for (int i = 0; i < meeting.Tracks.Count; i++)
+            foreach (var track in meeting.Tracks)
             {
-                Track track = meeting.Tracks[i];
                 var trackStartMorningSession = track.MorningSession.Start;
                 var trackStartAfternoonSessionStart = track.AfternoonSession.Start;
-                for (var index = 0; index < track.MorningSession.Talks.Count; index++)
+                foreach (var talk in track.MorningSession.Talks)
                 {
-                    Talk talk = track.MorningSession.Talks[index];
                     talk.Start = trackStartMorningSession;
-                    trackStartMorningSession = trackStartMorningSession.Add(new TimeSpan(0, talk.Duration.TalkLength * (int)talk.Duration.TalkLengthType, 0));
-
+                    trackStartMorningSession = trackStartMorningSession.Add(new TimeSpan(0, await ComputeTalkDuration(talk), 0));
                 }
-                for (int index = 0; index < track.AfternoonSession.Talks.Count; index++)
+                foreach (var talk in track.AfternoonSession.Talks)
                 {
-                    var talk = track.AfternoonSession.Talks[index];
                     talk.Start = trackStartAfternoonSessionStart;
-                    trackStartAfternoonSessionStart = trackStartAfternoonSessionStart.Add(new TimeSpan(0, talk.Duration.TalkLength * (int)talk.Duration.TalkLengthType, 0));
+                    trackStartAfternoonSessionStart = trackStartAfternoonSessionStart.Add(new TimeSpan(0, await ComputeTalkDuration(talk), 0));
                 }
             }
 
@@ -121,34 +122,33 @@ namespace MeetingManagement.EntityModels.Services
         }
         public async Task<bool> AllocateTalkToMorningSession(Talk talk)
         {
-            for (int i = 0; i < _tracks.Count; i++)
+            foreach (var track in _tracks)
             {
-                Track track = _tracks[i];
                 var trackstarttime = track.MorningSession.Start;
 
                 var minutes = talk.Duration.TalkLength * (int)(talk.Duration.TalkLengthType);
                 if (minutes <= track.MorningSession.SessionUnAllocatedTime.TotalMinutes)
                 {
-                    talk.Start = trackstarttime.Add(new TimeSpan(0, talk.Duration.TalkLength * (int)talk.Duration.TalkLengthType, 0));
+                    talk.Start = trackstarttime.Add(new TimeSpan(0, await ComputeTalkDuration(talk), 0));
                     track.MorningSession.Talks.Add(talk);
                     track.MorningSession.SessionUnAllocatedTime = track.MorningSession
                         .SessionUnAllocatedTime.Subtract(new TimeSpan(0, minutes, 0));
                     return true;
                 }
             }
+
             return false;
         }
 
         public async Task<bool> AllocateTalkToAfternoonSession(Talk talk)
         {
-            for (var i = 0; i < _tracks.Count; i++)
+            foreach (var track in _tracks)
             {
-                Track track = _tracks[i];
                 var trackstarttime = track.AfternoonSession.Start;
                 var minutes = talk.Duration.TalkLength * (int)(talk.Duration.TalkLengthType);
                 if (minutes <= track.AfternoonSession.SessionUnAllocatedTime.TotalMinutes)
                 {
-                    talk.Start = trackstarttime.Add(new TimeSpan(0, talk.Duration.TalkLength * (int)talk.Duration.TalkLengthType, 0));
+                    talk.Start = trackstarttime.Add(new TimeSpan(0, await ComputeTalkDuration(talk), 0));
                     track.AfternoonSession.Talks.Add(talk);
                     track.AfternoonSession.SessionUnAllocatedTime = track.AfternoonSession
                         .SessionUnAllocatedTime.Subtract(new TimeSpan(0, minutes, 0));
@@ -172,8 +172,6 @@ namespace MeetingManagement.EntityModels.Services
         {
             foreach (var track in _tracks)
             {
-                _unAllocatedTime += (int)track.MorningSession.End.Subtract(track.MorningSession.Start).TotalMinutes;
-                _unAllocatedTime += (int)track.AfternoonSession.End.Subtract(track.AfternoonSession.Start).TotalMinutes;
             }
         }
 
@@ -189,6 +187,14 @@ namespace MeetingManagement.EntityModels.Services
                 _talks[index] = _talks[count];
                 _talks[count] = talk;
             }
+
+        }
+
+        public async Task<int> ComputeTalkDuration(Talk talk)
+        {
+            return _culture.CompareInfo.IndexOf(talk.Title, "lightning", CompareOptions.IgnoreCase) >= 0
+                ? (int)TalkLengthTypeEnum.Lightning
+                : (talk.Duration.TalkLength * (int)TalkLengthTypeEnum.Minutes);
 
         }
     }

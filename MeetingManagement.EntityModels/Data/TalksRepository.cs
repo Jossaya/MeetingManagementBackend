@@ -40,11 +40,10 @@ namespace MeetingManagement.EntityModels.Data
             foreach (var stringInput in TestStringInput)
             {
              var talk=    new Talk(Guid.NewGuid(), stringInput.Substring(0, stringInput.IndexOf(":", StringComparison.Ordinal)),
-                    new TalkDuration {TalkLength = Convert.ToInt32(Regex.Match(stringInput, @"\d+").Value), TalkLengthType = culture.CompareInfo.IndexOf(stringInput, "lightning", CompareOptions.IgnoreCase) >= 0 ? TalkLengthTypeEnum.Lightning : TalkLengthTypeEnum.Minutes});
+                    new TalkDuration {TalkLength = culture.CompareInfo.IndexOf(stringInput, "lightning", CompareOptions.IgnoreCase) >= 0 ? (int)TalkLengthTypeEnum.Lightning : Convert.ToInt32(Regex.Match(stringInput, @"\d+").Value), TalkLengthType = culture.CompareInfo.IndexOf(stringInput, "lightning", CompareOptions.IgnoreCase) >= 0 ? TalkLengthTypeEnum.Lightning : TalkLengthTypeEnum.Minutes});
                 TestInput.Add(talk);
             }
 
-            var test = TestInput;
 
         }
 
