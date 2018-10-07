@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using MeetingManagement.EntityModels.Enums;
 
 namespace MeetingManagement.EntityModels.Data
@@ -10,7 +12,8 @@ namespace MeetingManagement.EntityModels.Data
         public List<Talk> TestInput { get; set; }
         public TalksRepository()
         {
-            TestStringInput = new List<string>()
+            TestInput= new List<Talk>();
+               TestStringInput = new List<string>()
             {
                 "Writing Fast Tests Against Enterprise Rails: 60min",
                 "Overdoing it in Python: 45min",
@@ -33,31 +36,17 @@ namespace MeetingManagement.EntityModels.Data
                 "User Interface CSS in Rails Apps: 30min"
 
             };
-            TestInput = new List<Talk>()
+            CultureInfo culture = CultureInfo.CurrentCulture;
+            foreach (var stringInput in TestStringInput)
             {
+             var talk=    new Talk(Guid.NewGuid(), stringInput.Substring(0, stringInput.IndexOf(":", StringComparison.Ordinal)),
+                    new TalkDuration {TalkLength = Convert.ToInt32(Regex.Match(stringInput, @"\d+").Value), TalkLengthType = culture.CompareInfo.IndexOf(stringInput, "lightning", CompareOptions.IgnoreCase) >= 0 ? TalkLengthTypeEnum.Lightning : TalkLengthTypeEnum.Minutes});
+                TestInput.Add(talk);
+            }
 
-                new Talk(Guid.NewGuid(),  "Writing Fast Tests Against Enterprise Rails", new TalkDuration{ TalkLength =60, TalkLengthType=TalkLengthTypeEnum.Minutes }),
-                new Talk(Guid.NewGuid(),  "Overdoing it in Python", new TalkDuration{ TalkLength=45,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "Lua for the Masses", new TalkDuration{ TalkLength=30,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "Ruby Errors from Mismatched Gem Versions", new TalkDuration{ TalkLength=45,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "Common Ruby Errors", new TalkDuration{ TalkLength=45,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "Rails for Python Developers lightning", new TalkDuration{ TalkLength=35,TalkLengthType=TalkLengthTypeEnum.Lightining}),
-                new Talk(Guid.NewGuid(),  "Communicating Over Distance", new TalkDuration{ TalkLength=60,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "Accounting-Driven Development", new TalkDuration{ TalkLength=45,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "Woah", new TalkDuration{ TalkLength=30,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "Sit Down and Write", new TalkDuration{ TalkLength=30,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "Pair Programming vs Noise", new TalkDuration{ TalkLength=45,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "Rails Magic", new TalkDuration{ TalkLength=60,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "Ruby on Rails: Why We Should Move On?", new TalkDuration{ TalkLength=60,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "Clojure Ate Scala (on my project)", new TalkDuration{ TalkLength=45,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "Programming in the Boondocks of Seattle", new TalkDuration{ TalkLength=30,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "Ruby vs. Clojure for Back-End Development", new TalkDuration{ TalkLength=30,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "Ruby on Rails Legacy App Maintenance", new TalkDuration{ TalkLength=60,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "A World Without HackerNews", new TalkDuration{ TalkLength=30,TalkLengthType=TalkLengthTypeEnum.Minutes }),
-                new Talk(Guid.NewGuid(),  "User Interface CSS in Rails Apps", new TalkDuration{ TalkLength=30,TalkLengthType=TalkLengthTypeEnum.Minutes})
-
-            };
+            var test = TestInput;
 
         }
+
     }
 }

@@ -37,7 +37,7 @@ namespace MeetingManagement.UnitTests
                 new Talk(Guid.NewGuid(),  "Lua for the Masses", new TalkDuration{ TalkLength=30,TalkLengthType=TalkLengthTypeEnum.Minutes}),
                 new Talk(Guid.NewGuid(),  "Ruby Errors from Mismatched Gem Versions", new TalkDuration{ TalkLength=45,TalkLengthType=TalkLengthTypeEnum.Minutes}),
                 new Talk(Guid.NewGuid(),  "Common Ruby Errors", new TalkDuration{ TalkLength=45,TalkLengthType=TalkLengthTypeEnum.Minutes}),
-                new Talk(Guid.NewGuid(),  "Rails for Python Developers lightning", new TalkDuration{ TalkLength=35,TalkLengthType=TalkLengthTypeEnum.Lightining}),
+                new Talk(Guid.NewGuid(),  "Rails for Python Developers lightning", new TalkDuration{ TalkLength=35,TalkLengthType=TalkLengthTypeEnum.Lightning}),
                 new Talk(Guid.NewGuid(),  "Communicating Over Distance", new TalkDuration{ TalkLength=60,TalkLengthType=TalkLengthTypeEnum.Minutes}),
                 new Talk(Guid.NewGuid(),  "Accounting-Driven Development", new TalkDuration{ TalkLength=45,TalkLengthType=TalkLengthTypeEnum.Minutes}),
 

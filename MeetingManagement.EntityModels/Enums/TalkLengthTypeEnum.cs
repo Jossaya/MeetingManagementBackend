@@ -3,7 +3,7 @@
     public enum TalkLengthTypeEnum
     {
         Minutes = 1,
-        Lightining = 5
+        Lightning = 5
 
     }
 }
